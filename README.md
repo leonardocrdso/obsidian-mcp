@@ -7,17 +7,38 @@ Cobertura completa da API com **22 tools** organizadas em 5 módulos.
 ## Requisitos
 
 - [Obsidian](https://obsidian.md/) com o plugin **Local REST API** instalado e ativo
-- [Bun](https://bun.sh/) (desenvolvimento) ou Node.js 18+ (produção)
-
-## Instalação
-
-```bash
-npm install -g @leonardocrdso/obsidian-mcp
-```
+- Node.js 18+ ou [Bun](https://bun.sh/)
 
 ## Configuração
 
-### Variáveis de ambiente
+### 1. Setup interativo (recomendado)
+
+```bash
+npx @leonardocrdso/obsidian-mcp --setup
+```
+
+```
+  Obsidian MCP — Configuracao
+
+  API Key: sua-api-key-aqui
+  Host [127.0.0.1]: 192.168.1.50
+  Porta [27124]:
+  Protocolo [https]:
+
+  Configuracao salva em ~/.obsidian-mcp.json
+```
+
+O setup pede cada item e salva em `~/.obsidian-mcp.json`. Para reconfigurar, basta rodar `--setup` novamente.
+
+### 2. Registrar no Claude Code
+
+```bash
+claude mcp add obsidian -- npx @leonardocrdso/obsidian-mcp
+```
+
+### Variáveis de ambiente (alternativa)
+
+Se preferir, configure via variáveis de ambiente em vez do setup interativo:
 
 | Variável | Obrigatória | Padrão | Descrição |
 |---|---|---|---|
@@ -25,8 +46,6 @@ npm install -g @leonardocrdso/obsidian-mcp
 | `OBSIDIAN_HOST` | Não | `127.0.0.1` | Host do Obsidian |
 | `OBSIDIAN_PORT` | Não | `27124` | Porta do plugin |
 | `OBSIDIAN_PROTOCOL` | Não | `https` | Protocolo (http ou https) |
-
-### Claude Code (`settings.json`)
 
 ```json
 {
@@ -42,13 +61,16 @@ npm install -g @leonardocrdso/obsidian-mcp
 }
 ```
 
+Prioridade de configuração: arquivo `~/.obsidian-mcp.json` > variáveis de ambiente.
+
 ### Desenvolvimento
 
 ```bash
 git clone https://github.com/leonardocrdso/obsidian-mcp.git
 cd obsidian-mcp
 bun install
-OBSIDIAN_API_KEY=sua-key bun run dev
+bun run dev --setup  # configurar
+bun run dev          # iniciar servidor
 ```
 
 ## Tools (22)

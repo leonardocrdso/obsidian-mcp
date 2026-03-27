@@ -8,7 +8,13 @@ import type { VaultDirectory } from "./vault.types.js";
 export function registerVaultTools(server: McpServer, client: ObsidianClient) {
   server.tool(
     "vaultListFiles",
-    "Lista arquivos e pastas de um diretório do vault. Sem parâmetros lista a raiz.",
+    [
+      "Lista arquivos e pastas de um diretório do vault. Sem parâmetros lista a raiz.",
+      "",
+      "IMPORTANTE: Use esta tool ANTES de criar arquivos para entender a estrutura de pastas existente.",
+      "Navegue pela raiz e subpastas para mapear como o vault está organizado por assunto.",
+      "Pastas terminam com '/' no resultado.",
+    ].join("\n"),
     {
       path: z.string().optional().describe("Caminho do diretório no vault (ex: 'Notes/Projects')"),
     },
@@ -54,9 +60,20 @@ export function registerVaultTools(server: McpServer, client: ObsidianClient) {
 
   server.tool(
     "vaultCreateFile",
-    "Cria ou substitui um arquivo no vault.",
+    [
+      "Cria ou substitui um arquivo no vault.",
+      "",
+      "ANTES de chamar esta tool, você DEVE:",
+      "1. Usar vaultListFiles (sem parâmetros) para ver as pastas raiz do vault.",
+      "2. Explorar as subpastas relevantes para entender a organização por assunto.",
+      "3. Escolher a pasta que melhor se encaixa no tema do arquivo sendo criado.",
+      "4. Se nenhuma pasta existente fizer sentido, crie uma nova seguindo o padrão de nomenclatura já usado no vault.",
+      "",
+      "NUNCA crie arquivos soltos na raiz se houver uma estrutura de pastas organizada.",
+      "O objetivo é manter o vault coerente — cada arquivo deve estar na pasta que melhor representa seu assunto.",
+    ].join("\n"),
     {
-      path: z.string().describe("Caminho do arquivo a criar (ex: 'Notes/novo.md')"),
+      path: z.string().describe("Caminho completo do arquivo incluindo a pasta adequada (ex: 'Projetos/meu-projeto/reuniao.md')"),
       content: z.string().describe("Conteúdo do arquivo"),
     },
     safeTool(async (params) => {
@@ -73,7 +90,11 @@ export function registerVaultTools(server: McpServer, client: ObsidianClient) {
 
   server.tool(
     "vaultAppendContent",
-    "Adiciona conteúdo ao final de um arquivo existente no vault.",
+    [
+      "Adiciona conteúdo ao final de um arquivo existente no vault.",
+      "",
+      "Se não souber o path exato do arquivo, use vaultListFiles para navegar pelas pastas e encontrá-lo.",
+    ].join("\n"),
     {
       path: z.string().describe("Caminho do arquivo no vault"),
       content: z.string().describe("Conteúdo a adicionar ao final"),

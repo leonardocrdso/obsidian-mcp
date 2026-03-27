@@ -1,9 +1,15 @@
 #!/usr/bin/env node
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
+if (process.argv.includes("--setup")) {
+  const { runSetup } = await import("./shared/setup.js");
+  await runSetup();
+  process.exit(0);
+}
+
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import { config } from "./shared/config.js";
+import { getConfig } from "./shared/config.js";
 import { ObsidianClient } from "./shared/obsidian-client.js";
 import { registerVaultTools } from "./modules/vault/index.js";
 import { registerCommandsTools } from "./modules/commands/index.js";
@@ -16,6 +22,7 @@ const server = new McpServer({
   version: "1.0.0",
 });
 
+const config = getConfig();
 const client = new ObsidianClient(config.baseUrl, config.apiKey);
 
 registerVaultTools(server, client);
