@@ -30,10 +30,78 @@ npx @leonardocrdso/obsidian-mcp --setup
 
 O setup pede cada item e salva em `~/.obsidian-mcp.json`. Para reconfigurar, basta rodar `--setup` novamente.
 
-### 2. Registrar no Claude Code
+### 2. Registrar no AI Tool
+
+#### Claude Code (CLI)
 
 ```bash
 claude mcp add obsidian -- npx @leonardocrdso/obsidian-mcp
+```
+
+#### Claude Code (Cowork / Headless)
+
+Para usar com `claude --cowork` ou em modo headless, passe a config MCP via flag:
+
+```bash
+claude --mcp-config mcp.json
+```
+
+Crie o arquivo `mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "obsidian": {
+      "command": "npx",
+      "args": ["@leonardocrdso/obsidian-mcp"]
+    }
+  }
+}
+```
+
+#### Claude Desktop
+
+Adicione ao `claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "obsidian": {
+      "command": "npx",
+      "args": ["@leonardocrdso/obsidian-mcp"]
+    }
+  }
+}
+```
+
+#### Cursor
+
+Adicione ao `.cursor/mcp.json` do projeto:
+
+```json
+{
+  "mcpServers": {
+    "obsidian": {
+      "command": "npx",
+      "args": ["@leonardocrdso/obsidian-mcp"]
+    }
+  }
+}
+```
+
+#### Windsurf
+
+Adicione ao `~/.codeium/windsurf/mcp_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "obsidian": {
+      "command": "npx",
+      "args": ["@leonardocrdso/obsidian-mcp"]
+    }
+  }
+}
 ```
 
 ### Variáveis de ambiente (alternativa)
@@ -62,16 +130,6 @@ Se preferir, configure via variáveis de ambiente em vez do setup interativo:
 ```
 
 Prioridade de configuração: arquivo `~/.obsidian-mcp.json` > variáveis de ambiente.
-
-### Desenvolvimento
-
-```bash
-git clone https://github.com/leonardocrdso/obsidian-mcp.git
-cd obsidian-mcp
-bun install
-bun run dev --setup  # configurar
-bun run dev          # iniciar servidor
-```
 
 ## Tools (22)
 
@@ -116,6 +174,16 @@ bun run dev          # iniciar servidor
 | `periodicAppendContent` | Adiciona conteúdo à nota periódica |
 | `periodicPatchContent` | Insere conteúdo em local específico |
 | `periodicDeleteNote` | Remove nota periódica |
+
+## Desenvolvimento
+
+```bash
+git clone https://github.com/leonardocrdso/obsidian-mcp.git
+cd obsidian-mcp
+bun install
+bun run dev --setup  # configurar
+bun run dev          # iniciar servidor
+```
 
 ## License
 
