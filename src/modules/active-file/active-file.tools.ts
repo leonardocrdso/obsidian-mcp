@@ -62,17 +62,21 @@ export function registerActiveFileTools(server: McpServer, client: ObsidianClien
       target: z.string().describe("Identificador do alvo"),
       targetDelimiter: z.string().optional().describe("Delimitador para separar conteúdo inserido"),
       trimTargetWhitespace: z.boolean().optional().describe("Remover espaços do target antes de comparar"),
+      createTargetIfMissing: z.boolean().optional().describe("Criar o alvo se não existir no arquivo"),
     },
     safeTool(async (params) => {
       const headers: Record<string, string> = {
         "Content-Type": "text/markdown",
         Operation: params.operation,
         "Target-Type": params.targetType,
-        Target: params.target,
+        Target: encodeURIComponent(params.target),
       };
       if (params.targetDelimiter) headers["Target-Delimiter"] = params.targetDelimiter;
       if (params.trimTargetWhitespace !== undefined) {
         headers["Trim-Target-Whitespace"] = String(params.trimTargetWhitespace);
+      }
+      if (params.createTargetIfMissing !== undefined) {
+        headers["Create-Target-If-Missing"] = String(params.createTargetIfMissing);
       }
 
       await client.fetchVoid("/active/", {

@@ -18,9 +18,13 @@ const STATUS_MESSAGES: Record<number, string> = {
 
 export function formatObsidianError(error: unknown): string {
   if (error instanceof ObsidianApiError) {
-    const baseMessage = STATUS_MESSAGES[error.statusCode] ?? "Erro inesperado na API do Obsidian.";
+    const isInvalidTarget =
+      error.statusCode === 400 && error.message.includes("invalid-target");
+    const baseMessage = isInvalidTarget
+      ? "O alvo (heading, block ou frontmatter) não foi encontrado no arquivo. Verifique se o nome existe exatamente como especificado, ou use createTargetIfMissing: true."
+      : (STATUS_MESSAGES[error.statusCode] ?? "Erro inesperado na API do Obsidian.");
     const parts = [`[${error.statusCode}] ${baseMessage}`];
-    if (error.message) parts.push(`Detalhe: ${error.message}`);
+    if (!isInvalidTarget && error.message) parts.push(`Detalhe: ${error.message}`);
     return parts.join("\n");
   }
 
