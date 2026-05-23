@@ -232,35 +232,35 @@ Cobre AC7. Cobre §8 do design.
 
 Cobre AC1–AC9.
 
-- [ ] `bun run build` → exit 0 (AC9)
-- [ ] `std_review` em todos os arquivos NOVOS:
-  - [ ] `src/shared/patch-headers.ts`
-  - [ ] `src/modules/business-rules/index.ts`
-  - [ ] `src/modules/business-rules/business-rules.tools.ts`
-  - [ ] `src/modules/business-rules/business-rules.types.ts`
-  - [ ] `src/modules/business-rules/business-rules.template.ts`
-  - [ ] `src/modules/business-rules/business-rules.links.ts`
-  - [ ] (AC8) → 0 warnings em todos
-- [ ] `std_review` em arquivos TOCADOS:
-  - [ ] `src/shared/errors.ts`
-  - [ ] `src/modules/vault/vault.tools.ts`
-  - [ ] `src/modules/periodic/periodic.tools.ts`
-  - [ ] `src/index.ts`
-  - [ ] → sem warning novo comparado ao pré-feature
-- [ ] Verificar regra global: `git diff main..HEAD -- src/ | grep -E "^\+\s*(//|/\*)" | wc -l` → `0` (sem comentários adicionados)
-- [ ] Smoke manual com Obsidian rodando, em vault de teste:
-  - [ ] AC1: cliente MCP lista 27 tools, 5 com prefixo `businessRules`
-  - [ ] AC2: `businessRulesCreate project="teste-regras" title="Limite export PDF" area="faturamento" contexto="..." regra="..."` → arquivo criado em `Projetos/teste-regras/Regras/limite-export-pdf.md` com template exato (verificar frontmatter rico + 4 seções)
-  - [ ] AC3 (cross-link feliz): criar 2ª regra em `outro-projeto`, depois criar 3ª regra com `relatedRules=[{project:"outro-projeto", idOrPath:"<id-da-2a>"}]` → 3ª regra contém `[[Projetos/outro-projeto/Regras/...]]` em `## Referências` E 2ª regra ganhou back-link recíproco
-  - [ ] AC4 (transacional): tentar `Create` com `relatedRules` apontando para regra inexistente → erro `RelatedRuleNotFoundError`; verificar que arquivo da nova regra NÃO foi criado (`vaultGetFile` retorna 404)
-  - [ ] AC5: `businessRulesArchive project="teste-regras" idOrPath="..."` → arquivo movido para `_arquivadas/`, status mudou para `arquivada`, `atualizada` atualizada
-  - [ ] `businessRulesList project="teste-regras"` → não inclui a arquivada
-  - [ ] `businessRulesList project="teste-regras" includeArchived=true` → inclui a arquivada com `archived: true`
-  - [ ] `businessRulesGet` retorna conteúdo bruto
-  - [ ] `businessRulesUpdate` (frontmatter): mudar `status` para `ativa` → frontmatter atualizado, `atualizada` mudou
-  - [ ] `businessRulesUpdate` (section): append em `## Exceções` → seção crescida no fim
-- [ ] AC6: descrição da `businessRulesCreate` no servidor MCP contém palavras-chave "AUTOMATICAMENTE", "sempre que", "não peça permissão" (caso-insensitivo)
-- [ ] AC7: `grep "## Regras de Negócio" CLAUDE.md` → 1 hit
+- [x] `bun run build` → exit 0 (AC9)
+- [x] `std_review` em todos os arquivos NOVOS:
+  - [x] `src/shared/patch-headers.ts`
+  - [x] `src/modules/business-rules/index.ts`
+  - [x] `src/modules/business-rules/business-rules.tools.ts`
+  - [x] `src/modules/business-rules/business-rules.types.ts`
+  - [x] `src/modules/business-rules/business-rules.template.ts`
+  - [x] `src/modules/business-rules/business-rules.links.ts`
+  - [x] (AC8) → 0 warnings em todos
+- [x] `std_review` em arquivos TOCADOS:
+  - [x] `src/shared/errors.ts`
+  - [x] `src/modules/vault/vault.tools.ts`
+  - [x] `src/modules/periodic/periodic.tools.ts`
+  - [x] `src/index.ts`
+  - [x] → sem warning novo comparado ao pré-feature
+- [x] Verificar regra global: `git diff main..HEAD -- src/ | grep -E "^\+\s*(//|/\*)" | wc -l` → `0` (sem comentários adicionados)
+- [x] Smoke manual com Obsidian rodando, em vault de teste:
+  - [x] AC1: cliente MCP lista 27 tools, 5 com prefixo `businessRules`
+  - [x] AC2: `businessRulesCreate project="teste-regras" title="Limite export PDF" area="faturamento" contexto="..." regra="..."` → arquivo criado em `Projetos/teste-regras/Regras/limite-export-pdf.md` com template exato (verificar frontmatter rico + 4 seções)
+  - [x] AC3 (cross-link feliz): criar 2ª regra em `outro-projeto`, depois criar 3ª regra com `relatedRules=[{project:"outro-projeto", idOrPath:"<id-da-2a>"}]` → 3ª regra contém `[[Projetos/outro-projeto/Regras/...]]` em `## Referências` E 2ª regra ganhou back-link recíproco
+  - [x] AC4 (transacional): tentar `Create` com `relatedRules` apontando para regra inexistente → erro `RelatedRuleNotFoundError`; verificar que arquivo da nova regra NÃO foi criado (`vaultGetFile` retorna 404)
+  - [x] AC5: `businessRulesArchive project="teste-regras" idOrPath="..."` → arquivo movido para `_arquivadas/`, status mudou para `arquivada`, `atualizada` atualizada
+  - [x] `businessRulesList project="teste-regras"` → não inclui a arquivada
+  - [x] `businessRulesList project="teste-regras" includeArchived=true` → inclui a arquivada com `archived: true`
+  - [x] `businessRulesGet` retorna conteúdo bruto
+  - [x] `businessRulesUpdate` (frontmatter): mudar `status` para `ativa` → frontmatter atualizado, `atualizada` mudou
+  - [x] `businessRulesUpdate` (section): append em `## Exceções` → seção crescida no fim
+- [x] AC6: descrição da `businessRulesCreate` no servidor MCP contém palavras-chave "AUTOMATICAMENTE", "sempre que", "não peça permissão" (caso-insensitivo)
+- [x] AC7: `grep "## Regras de Negócio" CLAUDE.md` → 1 hit
 - [ ] Marcar spec como `done` via `mcp__lad-mcp__spec_status slug=003-business-rules status=done` (após confirmação do usuário)
 - [ ] Commit final (se houver ajustes de polish): `chore(spec-003): review final e smoke completo`
 
