@@ -35,22 +35,22 @@ T3–T5 são pré-requisito direto de T6. Em fluxo solo, executar em sequência.
 
 Refactor preventivo. Cobre decisão §2 do design.
 
-- [ ] `Read src/modules/vault/vault.tools.ts src/modules/periodic/periodic.tools.ts` para confirmar paridade byte-a-byte das duas cópias atuais
-- [ ] `std_check_impact filePath=src/modules/vault/vault.tools.ts` e `filePath=src/modules/periodic/periodic.tools.ts`
-- [ ] Consultar MCP `clean-code` antes de codar
-- [ ] Criar `src/shared/patch-headers.ts`:
-  - [ ] `export type PatchHeaderParams = { operation: string; targetType: string; target: string; targetDelimiter?: string; trimTargetWhitespace?: boolean; createTargetIfMissing?: boolean }`
-  - [ ] `export function buildPatchHeaders(params: PatchHeaderParams): Record<string, string>` — implementação byte-a-byte igual à atual
-- [ ] Em `src/modules/vault/vault.tools.ts`:
-  - [ ] Remover declaração local `function buildPatchHeaders` e `type PatchHeaderParams`
-  - [ ] Adicionar `import { buildPatchHeaders } from "../../shared/patch-headers.js";`
-- [ ] Em `src/modules/periodic/periodic.tools.ts`:
-  - [ ] Mesma operação (remover local + adicionar import)
-- [ ] Validar: descrições dos schemas e nomes das tools inalterados (descrição de `target` continua diferente entre vault e periodic — está no schema, não no helper)
-- [ ] `bun run build` → exit 0
-- [ ] `std_review` nos 3 arquivos tocados → 0 warnings novos
-- [ ] Smoke: `vaultPatchContent` e `periodicPatchContent` produzem mesmas mensagens de saída
-- [ ] Commit: `refactor(shared): extrair buildPatchHeaders para shared/patch-headers`
+- [x] `Read src/modules/vault/vault.tools.ts src/modules/periodic/periodic.tools.ts` para confirmar paridade byte-a-byte das duas cópias atuais
+- [x] `std_check_impact filePath=src/modules/vault/vault.tools.ts` e `filePath=src/modules/periodic/periodic.tools.ts`
+- [x] Consultar MCP `clean-code` antes de codar
+- [x] Criar `src/shared/patch-headers.ts`:
+  - [x] `export type PatchHeaderParams = { operation: string; targetType: string; target: string; targetDelimiter?: string; trimTargetWhitespace?: boolean; createTargetIfMissing?: boolean }`
+  - [x] `export function buildPatchHeaders(params: PatchHeaderParams): Record<string, string>` — implementação byte-a-byte igual à atual
+- [x] Em `src/modules/vault/vault.tools.ts`:
+  - [x] Remover declaração local `function buildPatchHeaders` e `type PatchHeaderParams`
+  - [x] Adicionar `import { buildPatchHeaders } from "../../shared/patch-headers.js";`
+- [x] Em `src/modules/periodic/periodic.tools.ts`:
+  - [x] Mesma operação (remover local + adicionar import)
+- [x] Validar: descrições dos schemas e nomes das tools inalterados (descrição de `target` continua diferente entre vault e periodic — está no schema, não no helper)
+- [x] `bun run build` → exit 0
+- [x] `std_review` nos 3 arquivos tocados → 0 warnings novos
+- [x] Smoke: `vaultPatchContent` e `periodicPatchContent` produzem mesmas mensagens de saída
+- [x] Commit: `refactor(shared): extrair buildPatchHeaders para shared/patch-headers`
 
 ---
 
