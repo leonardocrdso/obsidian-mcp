@@ -164,23 +164,23 @@ Cobre R5. Tools: `vaultMoveFile`, `vaultRenameFile`.
 
 Cobre R6. Tools: `vaultBacklinks`, `vaultOutline`, `vaultUnresolvedLinks`, `vaultOrphans`.
 
-- [ ] Consultar MCP `clean-code`
-- [ ] Criar `src/modules/graph/index.ts` (re-export)
-- [ ] Criar `src/modules/graph/graph.types.ts`:
-  - [ ] `BacklinkEntry`, `BacklinksResult`
-  - [ ] `HeadingEntry`, `OutlineResult`
-  - [ ] `UnresolvedLink`, `UnresolvedLinksResult`
-  - [ ] `OrphansResult`
-- [ ] Criar `src/modules/graph/graph.tools.ts`:
-  - [ ] Input schemas inline (`vaultBacklinksSchema`, etc.)
-  - [ ] Helper local `jsonResult(data)` que retorna `{ content: [{ type: "text", text: JSON.stringify(data, null, 2) }] }`
-  - [ ] 4 handlers seguindo padrão (guard available + run + jsonResult)
-  - [ ] `registerGraphTools(server, cli)` orquestrador linear
-- [ ] **Antes de fechar:** rodar manualmente cada uma contra Obsidian real, ajustar schemas Zod em `graph.types.ts` se payload divergir
-- [ ] `bun run build` → exit 0
-- [ ] `std_review` nos 3 arquivos novos → 0 warnings
-- [ ] Anotar no `context.md` da spec qualquer ajuste de schema necessário
-- [ ] Commit: `feat(graph): adicionar tools backlinks/outline/unresolved/orphans via CLI`
+- [x] Consultar MCP `clean-code`
+- [x] Criar `src/modules/graph/index.ts` (re-export)
+- [x] Criar `src/modules/graph/graph.types.ts`:
+  - [x] `BacklinkEntry`, `BacklinksResult`
+  - [x] `HeadingEntry`, `OutlineResult`
+  - [x] `UnresolvedLink`, `UnresolvedLinksResult`
+  - [x] `OrphansResult`
+- [x] Criar `src/modules/graph/graph.tools.ts`:
+  - [x] Input schemas inline (`vaultBacklinksSchema`, etc.)
+  - [x] Helper local `jsonResult(data)` que retorna `{ content: [{ type: "text", text: JSON.stringify(data, null, 2) }] }`
+  - [x] 4 handlers seguindo padrão (guard available + run + jsonResult)
+  - [x] `registerGraphTools(server, cli)` orquestrador linear
+- [x] **Antes de fechar:** rodar manualmente cada uma contra Obsidian real, ajustar schemas Zod em `graph.types.ts` se payload divergir
+- [x] `bun run build` → exit 0
+- [x] `std_review` nos 3 arquivos novos → 0 warnings
+- [x] Anotar no `context.md` da spec qualquer ajuste de schema necessário
+- [x] Commit: `feat(graph): adicionar tools backlinks/outline/unresolved/orphans via CLI`
 
 ## T7 [P] — Módulo `src/modules/properties/`
 
