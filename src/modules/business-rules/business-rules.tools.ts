@@ -247,7 +247,7 @@ function buildCreatePayload(params: CreateRuleParams, today: string) {
   }
   const id = generateId(slug, today);
   const path = `${rulesFolderPath(params.project)}/${slug}.md`;
-  return { slug, id, path };
+  return { id, path };
 }
 
 function buildReferences(targetPaths: string[]): string[] {
@@ -256,7 +256,7 @@ function buildReferences(targetPaths: string[]): string[] {
 
 async function handleBusinessRulesCreate(client: ObsidianClient, params: CreateRuleParams) {
   const today = todayIso();
-  const { slug, id, path } = buildCreatePayload(params, today);
+  const { id, path } = buildCreatePayload(params, today);
   await ensurePathDoesNotExist(client, path);
   const refs = params.relatedRules ?? [];
   const validatedTargets = refs.length > 0 ? await validateRelatedRules(client, refs) : [];
