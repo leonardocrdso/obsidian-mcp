@@ -16,6 +16,7 @@ import { registerCommandsTools } from "./modules/commands/index.js";
 import { registerSearchTools } from "./modules/search/index.js";
 import { registerActiveFileTools } from "./modules/active-file/index.js";
 import { registerPeriodicTools } from "./modules/periodic/index.js";
+import { registerProjectTools } from "./modules/project/index.js";
 
 const server = new McpServer({
   name: "obsidian-mcp",
@@ -30,6 +31,7 @@ registerCommandsTools(server, client);
 registerSearchTools(server, client);
 registerActiveFileTools(server, client);
 registerPeriodicTools(server, client);
+registerProjectTools(server, client);
 
 const transport = new StdioServerTransport();
 await server.connect(transport);
