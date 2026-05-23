@@ -155,7 +155,7 @@ registerProjectTools(server, client);
 ## Tratamento de erros
 
 - Reusa `safeTool` de `src/shared/errors.ts` (mesmo padrão dos outros módulos).
-- Erros 404 do GET probe são **esperados** — não devem ser logados como erro. Capturados via `try/catch` ou via type-guard contra `NotFoundError` existente em `errors.ts`.
+- Erros 404 do GET probe são **esperados** — não devem ser propagados como erro do tool. Capturados via `try/catch` no handler, usando o type-guard `error instanceof ObsidianApiError && error.statusCode === 404`.
 - Erros de validação Zod retornam pela infraestrutura MCP normal.
 
 ## Testes
