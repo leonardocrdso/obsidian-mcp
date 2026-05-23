@@ -221,10 +221,10 @@ Cobre AC7. Cobre §8 do design.
 ## T10 — Atualizar `README.md` (27 tools)
 
 - [ ] `Read README.md`
-- [ ] Localizar menção ao número total de tools (atualmente 22) e atualizar para 27
-- [ ] Adicionar seção/tabela com as 5 tools novas (nome + descrição curta de 1 linha)
-- [ ] Validar: `grep -E "businessRules(List|Get|Create|Update|Archive)" README.md` → 5 hits
-- [ ] Commit: `docs(readme): documentar 5 tools de business-rules e bump count`
+- [x] Localizar menção ao número total de tools (atualmente 22) e atualizar para 27
+- [x] Adicionar seção/tabela com as 5 tools novas (nome + descrição curta de 1 linha)
+- [x] Validar: `grep -E "businessRules(List|Get|Create|Update|Archive)" README.md` → 5 hits
+- [x] Commit: `docs(readme): documentar 5 tools de business-rules e bump count`
 
 ---
 
