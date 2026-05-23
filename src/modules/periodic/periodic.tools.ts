@@ -2,6 +2,7 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import type { ObsidianClient } from "../../shared/obsidian-client.js";
 import { safeTool } from "../../shared/errors.js";
+import { buildPatchHeaders } from "../../shared/patch-headers.js";
 import { PERIODS } from "./periodic.types.js";
 
 const periodSchema = z.enum(PERIODS).describe("Período: daily, weekly, monthly, quarterly ou yearly");
@@ -46,32 +47,6 @@ type PeriodicPatchContentParams = {
   createTargetIfMissing?: boolean;
 };
 type PeriodicDeleteNoteParams = { period: Period };
-
-type PatchHeaderParams = {
-  operation: string;
-  targetType: string;
-  target: string;
-  targetDelimiter?: string;
-  trimTargetWhitespace?: boolean;
-  createTargetIfMissing?: boolean;
-};
-
-function buildPatchHeaders(params: PatchHeaderParams): Record<string, string> {
-  const headers: Record<string, string> = {
-    "Content-Type": "text/markdown",
-    Operation: params.operation,
-    "Target-Type": params.targetType,
-    Target: encodeURIComponent(params.target),
-  };
-  if (params.targetDelimiter) headers["Target-Delimiter"] = params.targetDelimiter;
-  if (params.trimTargetWhitespace !== undefined) {
-    headers["Trim-Target-Whitespace"] = String(params.trimTargetWhitespace);
-  }
-  if (params.createTargetIfMissing !== undefined) {
-    headers["Create-Target-If-Missing"] = String(params.createTargetIfMissing);
-  }
-  return headers;
-}
 
 async function handlePeriodicGetNote(client: ObsidianClient, params: PeriodicGetNoteParams) {
   const text = await client.fetchText(`/periodic/${params.period}/`);

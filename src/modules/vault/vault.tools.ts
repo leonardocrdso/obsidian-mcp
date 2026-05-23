@@ -3,6 +3,7 @@ import { z } from "zod";
 import type { ObsidianClient } from "../../shared/obsidian-client.js";
 import type { NoteJson, PatchOperation, PatchTargetType } from "../../shared/types.js";
 import { safeTool } from "../../shared/errors.js";
+import { buildPatchHeaders } from "../../shared/patch-headers.js";
 import type { VaultDirectory } from "./vault.types.js";
 
 const patchFields = {
@@ -68,32 +69,6 @@ type VaultPatchContentParams = {
 };
 type VaultDeleteFileParams = { path: string };
 type VaultOpenFileParams = { path: string; newLeaf?: boolean };
-
-type PatchHeaderParams = {
-  operation: string;
-  targetType: string;
-  target: string;
-  targetDelimiter?: string;
-  trimTargetWhitespace?: boolean;
-  createTargetIfMissing?: boolean;
-};
-
-function buildPatchHeaders(params: PatchHeaderParams): Record<string, string> {
-  const headers: Record<string, string> = {
-    "Content-Type": "text/markdown",
-    Operation: params.operation,
-    "Target-Type": params.targetType,
-    Target: encodeURIComponent(params.target),
-  };
-  if (params.targetDelimiter) headers["Target-Delimiter"] = params.targetDelimiter;
-  if (params.trimTargetWhitespace !== undefined) {
-    headers["Trim-Target-Whitespace"] = String(params.trimTargetWhitespace);
-  }
-  if (params.createTargetIfMissing !== undefined) {
-    headers["Create-Target-If-Missing"] = String(params.createTargetIfMissing);
-  }
-  return headers;
-}
 
 async function handleVaultListFiles(client: ObsidianClient, params: VaultListFilesParams) {
   const dirPath = params.path ? `${client.encodePath(params.path)}/` : "";
