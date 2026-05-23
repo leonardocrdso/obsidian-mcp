@@ -131,20 +131,20 @@ Funções puras: slugify, generateId, todayIso, renderRule, parseFrontmatter, se
 
 Cross-link conservador: validação atômica + injeção + backlink. Cobre §6 do design.
 
-- [ ] Consultar MCP `clean-code` antes de codar
-- [ ] Criar `src/modules/business-rules/business-rules.links.ts`
-- [ ] Imports: `ObsidianClient`, `RelatedRuleNotFoundError` (de `shared/errors.js`), `buildPatchHeaders` (de `shared/patch-headers.js`), tipos do `business-rules.types.js`
-- [ ] Implementar helpers privados do arquivo:
-  - [ ] `async function resolveRulePathFromRef(client, ref: RelatedRuleRef): Promise<string>` — se `idOrPath` parece ID (`rule-YYYY-MM-DD-...`), lista pasta e procura match; se parece path, usa direto. Lança erro genérico se não achar.
-  - [ ] `function toRulePath(project, slugOrFile): string` — normaliza para `Projetos/<project>/Regras/<...>.md`
-  - [ ] `function toWikiLink(rulePath: string): string` — remove `.md` e envolve em `[[...]]`
-- [ ] Implementar funções públicas:
-  - [ ] `export async function validateRelatedRules(client: ObsidianClient, refs: RelatedRuleRef[]): Promise<string[]>` — para cada ref: tenta `fetchJson` em `/vault/<resolvedPath>` com Accept metadata; em 404 lança `RelatedRuleNotFoundError(ref.project, ref.idOrPath)`. Retorna lista de targetPaths validados.
-  - [ ] `export async function injectBacklinks(client: ObsidianClient, targetPaths: string[], sourceProject: string, sourceRulePath: string): Promise<void>` — para cada target: (1) PATCH heading "Referências" append wikilink; (2) atualiza `projetos_relacionados` no frontmatter (lê via metadata, monta novo array sem duplicar, PATCH frontmatter Operation=replace JSON); (3) PATCH frontmatter `atualizada` replace todayIso().
-- [ ] Garantir: nesting ≤ 3; cada função pública ≤ 20 linhas (extrair helpers se passar)
-- [ ] `bun run build` → exit 0
-- [ ] `std_review` → 0 warnings
-- [ ] Commit: `feat(business-rules): adicionar validação + backlink de cross-links`
+- [x] Consultar MCP `clean-code` antes de codar
+- [x] Criar `src/modules/business-rules/business-rules.links.ts`
+- [x] Imports: `ObsidianClient`, `RelatedRuleNotFoundError` (de `shared/errors.js`), `buildPatchHeaders` (de `shared/patch-headers.js`), tipos do `business-rules.types.js`
+- [x] Implementar helpers privados do arquivo:
+  - [x] `async function resolveRulePathFromRef(client, ref: RelatedRuleRef): Promise<string>` — se `idOrPath` parece ID (`rule-YYYY-MM-DD-...`), lista pasta e procura match; se parece path, usa direto. Lança erro genérico se não achar.
+  - [x] `function toRulePath(project, slugOrFile): string` — normaliza para `Projetos/<project>/Regras/<...>.md`
+  - [x] `function toWikiLink(rulePath: string): string` — remove `.md` e envolve em `[[...]]`
+- [x] Implementar funções públicas:
+  - [x] `export async function validateRelatedRules(client: ObsidianClient, refs: RelatedRuleRef[]): Promise<string[]>` — para cada ref: tenta `fetchJson` em `/vault/<resolvedPath>` com Accept metadata; em 404 lança `RelatedRuleNotFoundError(ref.project, ref.idOrPath)`. Retorna lista de targetPaths validados.
+  - [x] `export async function injectBacklinks(client: ObsidianClient, targetPaths: string[], sourceProject: string, sourceRulePath: string): Promise<void>` — para cada target: (1) PATCH heading "Referências" append wikilink; (2) atualiza `projetos_relacionados` no frontmatter (lê via metadata, monta novo array sem duplicar, PATCH frontmatter Operation=replace JSON); (3) PATCH frontmatter `atualizada` replace todayIso().
+- [x] Garantir: nesting ≤ 3; cada função pública ≤ 20 linhas (extrair helpers se passar)
+- [x] `bun run build` → exit 0
+- [x] `std_review` → 0 warnings
+- [x] Commit: `feat(business-rules): adicionar validação + backlink de cross-links`
 
 ---
 
