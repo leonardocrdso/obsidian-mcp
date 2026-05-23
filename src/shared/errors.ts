@@ -8,6 +8,35 @@ export class ObsidianApiError extends Error {
   }
 }
 
+export class RuleAlreadyExistsError extends Error {
+  constructor(public readonly path: string) {
+    super(`Regra já existe em ${path}. Use businessRulesUpdate para alterar.`);
+    this.name = "RuleAlreadyExistsError";
+  }
+}
+
+export class RelatedRuleNotFoundError extends Error {
+  constructor(
+    public readonly project: string,
+    public readonly idOrPath: string
+  ) {
+    super(
+      `Regra-alvo não encontrada: project=${project}, idOrPath=${idOrPath}. Crie a regra-alvo antes de referenciá-la.`
+    );
+    this.name = "RelatedRuleNotFoundError";
+  }
+}
+
+export class RuleNotFoundError extends Error {
+  constructor(
+    public readonly project: string,
+    public readonly idOrPath: string
+  ) {
+    super(`Regra não encontrada em ${project}: ${idOrPath}.`);
+    this.name = "RuleNotFoundError";
+  }
+}
+
 const STATUS_MESSAGES: Record<number, string> = {
   400: "Requisição inválida. Verifique os parâmetros enviados.",
   401: "API key inválida ou ausente. Verifique a configuração do plugin Local REST API.",
@@ -46,9 +75,24 @@ function resolveNetworkErrorMessage(error: TypeError): string {
   return [...NETWORK_OFFLINE_LINES, `Detalhe: ${error.message}`].join("\n");
 }
 
+function resolveRuleAlreadyExistsMessage(error: RuleAlreadyExistsError): string {
+  return `[RuleAlreadyExistsError] ${error.message}`;
+}
+
+function resolveRelatedRuleNotFoundMessage(error: RelatedRuleNotFoundError): string {
+  return `[RelatedRuleNotFoundError] ${error.message}`;
+}
+
+function resolveRuleNotFoundMessage(error: RuleNotFoundError): string {
+  return `[RuleNotFoundError] ${error.message}`;
+}
+
 export function formatObsidianError(error: unknown): string {
   if (error instanceof ObsidianApiError) return resolveApiErrorMessage(error);
   if (isNetworkError(error)) return resolveNetworkErrorMessage(error);
+  if (error instanceof RuleAlreadyExistsError) return resolveRuleAlreadyExistsMessage(error);
+  if (error instanceof RelatedRuleNotFoundError) return resolveRelatedRuleNotFoundMessage(error);
+  if (error instanceof RuleNotFoundError) return resolveRuleNotFoundMessage(error);
   if (error instanceof Error) return `[ERRO] ${error.message}`;
   return `[ERRO] ${String(error)}`;
 }

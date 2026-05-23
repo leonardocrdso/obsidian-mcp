@@ -58,25 +58,25 @@ Refactor preventivo. Cobre decisão §2 do design.
 
 Cobre decisão arquitetural sobre erros (spec §Tratamento de erros).
 
-- [ ] `Read src/shared/errors.ts`
-- [ ] `std_check_impact filePath=src/shared/errors.ts`
-- [ ] Adicionar 3 classes de erro no topo (após `ObsidianApiError`):
-  - [ ] `export class RuleAlreadyExistsError extends Error { constructor(public readonly path: string) { super(`Regra já existe em ${path}. Use businessRulesUpdate para alterar.`); this.name = "RuleAlreadyExistsError"; } }`
-  - [ ] `export class RelatedRuleNotFoundError extends Error { constructor(public readonly project: string, public readonly idOrPath: string) { super(`Regra-alvo não encontrada: project=${project}, idOrPath=${idOrPath}. Crie a regra-alvo antes de referenciá-la.`); this.name = "RelatedRuleNotFoundError"; } }`
-  - [ ] `export class RuleNotFoundError extends Error { constructor(public readonly project: string, public readonly idOrPath: string) { super(`Regra não encontrada em ${project}: ${idOrPath}.`); this.name = "RuleNotFoundError"; } }`
-- [ ] Adicionar 3 resolvers privados:
-  - [ ] `function resolveRuleAlreadyExistsMessage(error: RuleAlreadyExistsError): string`
-  - [ ] `function resolveRelatedRuleNotFoundMessage(error: RelatedRuleNotFoundError): string`
-  - [ ] `function resolveRuleNotFoundMessage(error: RuleNotFoundError): string`
-  - [ ] Cada um retorna `[<NomeErro>] ${error.message}` (formato consistente com os existentes)
-- [ ] Em `formatObsidianError`, adicionar 3 ramos `instanceof` ANTES do ramo genérico `Error`:
-  - [ ] `if (error instanceof RuleAlreadyExistsError) return resolveRuleAlreadyExistsMessage(error);`
-  - [ ] `if (error instanceof RelatedRuleNotFoundError) return resolveRelatedRuleNotFoundMessage(error);`
-  - [ ] `if (error instanceof RuleNotFoundError) return resolveRuleNotFoundMessage(error);`
-- [ ] Validar: 0 linhas existentes removidas/modificadas; só adições; `ObsidianApiError`, `safeTool`, `formatObsidianError` (lógica antiga), `STATUS_MESSAGES` intocados
-- [ ] `bun run build` → exit 0
-- [ ] `std_review filePath=src/shared/errors.ts` → 0 warnings novos
-- [ ] Commit: `feat(errors): adicionar erros e resolvers do módulo business-rules`
+- [x] `Read src/shared/errors.ts`
+- [x] `std_check_impact filePath=src/shared/errors.ts`
+- [x] Adicionar 3 classes de erro no topo (após `ObsidianApiError`):
+  - [x] `export class RuleAlreadyExistsError extends Error { constructor(public readonly path: string) { super(`Regra já existe em ${path}. Use businessRulesUpdate para alterar.`); this.name = "RuleAlreadyExistsError"; } }`
+  - [x] `export class RelatedRuleNotFoundError extends Error { constructor(public readonly project: string, public readonly idOrPath: string) { super(`Regra-alvo não encontrada: project=${project}, idOrPath=${idOrPath}. Crie a regra-alvo antes de referenciá-la.`); this.name = "RelatedRuleNotFoundError"; } }`
+  - [x] `export class RuleNotFoundError extends Error { constructor(public readonly project: string, public readonly idOrPath: string) { super(`Regra não encontrada em ${project}: ${idOrPath}.`); this.name = "RuleNotFoundError"; } }`
+- [x] Adicionar 3 resolvers privados:
+  - [x] `function resolveRuleAlreadyExistsMessage(error: RuleAlreadyExistsError): string`
+  - [x] `function resolveRelatedRuleNotFoundMessage(error: RelatedRuleNotFoundError): string`
+  - [x] `function resolveRuleNotFoundMessage(error: RuleNotFoundError): string`
+  - [x] Cada um retorna `[<NomeErro>] ${error.message}` (formato consistente com os existentes)
+- [x] Em `formatObsidianError`, adicionar 3 ramos `instanceof` ANTES do ramo genérico `Error`:
+  - [x] `if (error instanceof RuleAlreadyExistsError) return resolveRuleAlreadyExistsMessage(error);`
+  - [x] `if (error instanceof RelatedRuleNotFoundError) return resolveRelatedRuleNotFoundMessage(error);`
+  - [x] `if (error instanceof RuleNotFoundError) return resolveRuleNotFoundMessage(error);`
+- [x] Validar: 0 linhas existentes removidas/modificadas; só adições; `ObsidianApiError`, `safeTool`, `formatObsidianError` (lógica antiga), `STATUS_MESSAGES` intocados
+- [x] `bun run build` → exit 0
+- [x] `std_review filePath=src/shared/errors.ts` → 0 warnings novos
+- [x] Commit: `feat(errors): adicionar erros e resolvers do módulo business-rules`
 
 ---
 
