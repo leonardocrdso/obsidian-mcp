@@ -84,21 +84,21 @@ Cobre decisão arquitetural sobre erros (spec §Tratamento de erros).
 
 Tipos puros, sem lógica. Cobre §10 do design.
 
-- [ ] Consultar MCP `clean-code` antes de codar
-- [ ] Criar `src/modules/business-rules/` (diretório)
-- [ ] Criar `src/modules/business-rules/business-rules.types.ts`:
-  - [ ] `export type RuleStatus = "ativa" | "arquivada";`
-  - [ ] `export type RuleFrontmatter = { id: string; title: string; status: RuleStatus; area: string; tags: string[]; projetos_relacionados: string[]; fontes: string[]; criada: string; atualizada: string; };`
-  - [ ] `export type RuleListEntry = { id: string; title: string; status: string; area: string; path: string; archived: boolean; };`
-  - [ ] `export type RelatedRuleRef = { project: string; idOrPath: string };`
-  - [ ] `export type RenderRuleParams = { id: string; title: string; status: RuleStatus; area: string; tags: string[]; projetosRelacionados: string[]; fontes: string[]; criada: string; atualizada: string; contexto: string; regra: string; excecoes: string; referencias: string[]; };`
-  - [ ] `export type CreateRuleParams = { project: string; title: string; area: string; contexto: string; regra: string; excecoes?: string; tags?: string[]; fontes?: string[]; relatedRules?: RelatedRuleRef[]; };`
-  - [ ] `export type UpdateFrontmatterUpdate = { kind: "frontmatter"; key: "status" | "area" | "tags" | "fontes"; value: string | string[]; };`
-  - [ ] `export type UpdateSectionUpdate = { kind: "section"; section: "Contexto" | "Regra" | "Exceções" | "Referências"; operation: "append" | "prepend" | "replace"; content: string; };`
-  - [ ] `export type UpdateRuleParams = { project: string; idOrPath: string; update: UpdateFrontmatterUpdate | UpdateSectionUpdate };`
-- [ ] `bun run build` → exit 0
-- [ ] `std_review` → 0 warnings
-- [ ] Commit: `feat(business-rules): adicionar tipos do módulo`
+- [x] Consultar MCP `clean-code` antes de codar
+- [x] Criar `src/modules/business-rules/` (diretório)
+- [x] Criar `src/modules/business-rules/business-rules.types.ts`:
+  - [x] `export type RuleStatus = "ativa" | "arquivada";`
+  - [x] `export type RuleFrontmatter = { id: string; title: string; status: RuleStatus; area: string; tags: string[]; projetos_relacionados: string[]; fontes: string[]; criada: string; atualizada: string; };`
+  - [x] `export type RuleListEntry = { id: string; title: string; status: string; area: string; path: string; archived: boolean; };`
+  - [x] `export type RelatedRuleRef = { project: string; idOrPath: string };`
+  - [x] `export type RenderRuleParams = { id: string; title: string; status: RuleStatus; area: string; tags: string[]; projetosRelacionados: string[]; fontes: string[]; criada: string; atualizada: string; contexto: string; regra: string; excecoes: string; referencias: string[]; };`
+  - [x] `export type CreateRuleParams = { project: string; title: string; area: string; contexto: string; regra: string; excecoes?: string; tags?: string[]; fontes?: string[]; relatedRules?: RelatedRuleRef[]; };`
+  - [x] `export type UpdateFrontmatterUpdate = { kind: "frontmatter"; key: "status" | "area" | "tags" | "fontes"; value: string | string[]; };`
+  - [x] `export type UpdateSectionUpdate = { kind: "section"; section: "Contexto" | "Regra" | "Exceções" | "Referências"; operation: "append" | "prepend" | "replace"; content: string; };`
+  - [x] `export type UpdateRuleParams = { project: string; idOrPath: string; update: UpdateFrontmatterUpdate | UpdateSectionUpdate };`
+- [x] `bun run build` → exit 0
+- [x] `std_review` → 0 warnings
+- [x] Commit: `feat(business-rules): adicionar tipos do módulo`
 
 ---
 
