@@ -4,3 +4,4 @@ build/
 .npmrc
 publish.sh
 .claude/
+.lad/secrets/

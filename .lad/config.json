@@ -1,0 +1,30 @@
+{
+  "version": "1.0",
+  "stacks": [
+    "nodejs"
+  ],
+  "paths": {
+    "scan": [
+      "app/",
+      "routes/",
+      "src/"
+    ],
+    "ignore": [
+      "vendor/",
+      "node_modules/",
+      "storage/",
+      "tests/",
+      ".git/"
+    ]
+  },
+  "output": ".lad/traces",
+  "specs": ".lad/specs",
+  "language": {
+    "docs": "en",
+    "interaction": "pt-BR"
+  },
+  "claudeCodeUi": {
+    "url": "http://localhost:5096",
+    "enabled": true
+  }
+}
