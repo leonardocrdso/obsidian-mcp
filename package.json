@@ -1,11 +1,10 @@
 {
   "name": "@leonardocrdso/obsidian-mcp",
-  "version": "1.2.0",
-  "description": "MCP server for Obsidian — full Local REST API integration with 22 tools",
+  "version": "1.2.1",
+  "description": "MCP server for Obsidian — full Local REST API integration with 27 tools",
   "type": "module",
-  "main": "build/index.js",
+  "main": "./build/index.js",
   "bin": {
-    "@leonardocrdso/obsidian-mcp": "build/index.js",
     "obsidian-mcp": "build/index.js"
   },
   "files": [
