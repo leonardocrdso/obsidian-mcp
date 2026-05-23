@@ -152,28 +152,28 @@ Cross-link conservador: validação atômica + injeção + backlink. Cobre §6 d
 
 5 schemas Zod + 5 handlers + função register. Cobre §3 do design.
 
-- [ ] Consultar MCP `clean-code` e `modular-monolith` antes de codar
-- [ ] `Read src/modules/vault/vault.tools.ts` para alinhar estilo (já tenho na sessão, mas reler para garantir paridade)
-- [ ] Criar `src/modules/business-rules/business-rules.tools.ts`
-- [ ] Imports: `McpServer`, `z`, `ObsidianClient`, `safeTool`, `RuleAlreadyExistsError`, `RuleNotFoundError`, `buildPatchHeaders` (de `shared/patch-headers.js`), funções de `business-rules.template.js` e `business-rules.links.js`, tipos
-- [ ] Declarar 5 schemas Zod top-level (`businessRulesListSchema`, `...GetSchema`, `...CreateSchema`, `...UpdateSchema`, `...ArchiveSchema`) — incluir `.describe()` em cada campo com texto claro
-- [ ] `businessRulesUpdateSchema.update` usa `z.discriminatedUnion("kind", [...])` (vide §3.4)
-- [ ] Declarar types inferidos (ou explícitos)
-- [ ] Implementar handlers top-level (cada um ≤ 20 linhas; quebrar em helpers privados se passar):
-  - [ ] `handleBusinessRulesList(client, params)` — combina pasta ativa + `_arquivadas/` (se flag), parseFrontmatter por arquivo, monta entries; trata 404 da pasta retornando `[]`
-  - [ ] `handleBusinessRulesGet(client, params)` — resolve idOrPath, fetchText, traduz 404 → `RuleNotFoundError`
-  - [ ] `handleBusinessRulesCreate(client, params)` — fluxo §6: check existência, valida related, render, PUT, inject backlinks; retorna `{ id, path, relatedLinks }`
-  - [ ] `handleBusinessRulesUpdate(client, params)` — discriminated dispatch: section → PATCH heading; frontmatter → PATCH frontmatter; segundo PATCH para `atualizada=hoje`; traduz 404 → `RuleNotFoundError`
-  - [ ] `handleBusinessRulesArchive(client, params)` — fetchText, parseFrontmatter, mutar, serializeFrontmatter+body, PUT em `_arquivadas/`, DELETE original
-- [ ] Helpers privados sugeridos: `resolveActiveRulePath(client, project, idOrPath)`, `buildArchivedPath(project, slug)`, `headingTargetForSection(section)`
-- [ ] Implementar `export function registerBusinessRulesTools(server: McpServer, client: ObsidianClient)` como orquestrador linear (1 `server.tool(...)` por tool, descrição imperativa conforme §Auto-acionamento da spec; ver bloco abaixo)
-- [ ] Descrição da `businessRulesCreate` (sugestão; ajustar se ficar deselegante):
+- [x] Consultar MCP `clean-code` e `modular-monolith` antes de codar
+- [x] `Read src/modules/vault/vault.tools.ts` para alinhar estilo (já tenho na sessão, mas reler para garantir paridade)
+- [x] Criar `src/modules/business-rules/business-rules.tools.ts`
+- [x] Imports: `McpServer`, `z`, `ObsidianClient`, `safeTool`, `RuleAlreadyExistsError`, `RuleNotFoundError`, `buildPatchHeaders` (de `shared/patch-headers.js`), funções de `business-rules.template.js` e `business-rules.links.js`, tipos
+- [x] Declarar 5 schemas Zod top-level (`businessRulesListSchema`, `...GetSchema`, `...CreateSchema`, `...UpdateSchema`, `...ArchiveSchema`) — incluir `.describe()` em cada campo com texto claro
+- [x] `businessRulesUpdateSchema.update` usa `z.discriminatedUnion("kind", [...])` (vide §3.4)
+- [x] Declarar types inferidos (ou explícitos)
+- [x] Implementar handlers top-level (cada um ≤ 20 linhas; quebrar em helpers privados se passar):
+  - [x] `handleBusinessRulesList(client, params)` — combina pasta ativa + `_arquivadas/` (se flag), parseFrontmatter por arquivo, monta entries; trata 404 da pasta retornando `[]`
+  - [x] `handleBusinessRulesGet(client, params)` — resolve idOrPath, fetchText, traduz 404 → `RuleNotFoundError`
+  - [x] `handleBusinessRulesCreate(client, params)` — fluxo §6: check existência, valida related, render, PUT, inject backlinks; retorna `{ id, path, relatedLinks }`
+  - [x] `handleBusinessRulesUpdate(client, params)` — discriminated dispatch: section → PATCH heading; frontmatter → PATCH frontmatter; segundo PATCH para `atualizada=hoje`; traduz 404 → `RuleNotFoundError`
+  - [x] `handleBusinessRulesArchive(client, params)` — fetchText, parseFrontmatter, mutar, serializeFrontmatter+body, PUT em `_arquivadas/`, DELETE original
+- [x] Helpers privados sugeridos: `resolveActiveRulePath(client, project, idOrPath)`, `buildArchivedPath(project, slug)`, `headingTargetForSection(section)`
+- [x] Implementar `export function registerBusinessRulesTools(server: McpServer, client: ObsidianClient)` como orquestrador linear (1 `server.tool(...)` por tool, descrição imperativa conforme §Auto-acionamento da spec; ver bloco abaixo)
+- [x] Descrição da `businessRulesCreate` (sugestão; ajustar se ficar deselegante):
   ```
   Use AUTOMATICAMENTE quando o usuário verbalizar uma regra de negócio. Sinais: "sempre que X então Y", "usuários do plano Z não podem W", "o cálculo de A deve seguir B". NÃO peça permissão. Chame businessRulesList primeiro para checar duplicata; se houver, use businessRulesUpdate. Se for genuinamente nova, chame businessRulesCreate.
   ```
-- [ ] `bun run build` → exit 0
-- [ ] `std_review` → 0 warnings de function-length/nesting-depth
-- [ ] Commit: `feat(business-rules): adicionar 5 tools (list/get/create/update/archive)`
+- [x] `bun run build` → exit 0
+- [x] `std_review` → 0 warnings de function-length/nesting-depth
+- [x] Commit: `feat(business-rules): adicionar 5 tools (list/get/create/update/archive)`
 
 ---
 
@@ -181,11 +181,11 @@ Cross-link conservador: validação atômica + injeção + backlink. Cobre §6 d
 
 Re-export padrão LAD.
 
-- [ ] Criar `src/modules/business-rules/index.ts`:
-  - [ ] `export { registerBusinessRulesTools } from "./business-rules.tools.js";`
-- [ ] `bun run build` → exit 0
-- [ ] `std_review` → 0 warnings
-- [ ] Commit: `feat(business-rules): adicionar index do módulo`
+- [x] Criar `src/modules/business-rules/index.ts`:
+  - [x] `export { registerBusinessRulesTools } from "./business-rules.tools.js";`
+- [x] `bun run build` → exit 0
+- [x] `std_review` → 0 warnings
+- [x] Commit: `feat(business-rules): adicionar index do módulo`
 
 ---
 
@@ -193,17 +193,17 @@ Re-export padrão LAD.
 
 Cobre AC1.
 
-- [ ] `Read src/index.ts`
-- [ ] `std_check_impact filePath=src/index.ts`
-- [ ] Adicionar import na seção de imports (ordem alfabética entre os `register*`):
-  - [ ] `import { registerBusinessRulesTools } from "./modules/business-rules/index.js";`
-- [ ] Adicionar chamada `registerBusinessRulesTools(server, client);` entre `registerActiveFileTools(...)` e `registerCommandsTools(...)` (ordem alfabética: active-file, business-rules, commands, periodic, project, search, vault)
-- [ ] Verificar: nenhuma linha existente removida
-- [ ] `bun run build` → exit 0
-- [ ] Smoke: `node build/index.js` sobe sem erro
-- [ ] Smoke: cliente MCP lista 27 tools (22 antigas + 5 novas)
-- [ ] `std_review` → 0 warnings novos
-- [ ] Commit: `feat(server): wire módulo business-rules`
+- [x] `Read src/index.ts`
+- [x] `std_check_impact filePath=src/index.ts`
+- [x] Adicionar import na seção de imports (ordem alfabética entre os `register*`):
+  - [x] `import { registerBusinessRulesTools } from "./modules/business-rules/index.js";`
+- [x] Adicionar chamada `registerBusinessRulesTools(server, client);` entre `registerActiveFileTools(...)` e `registerCommandsTools(...)` (ordem alfabética: active-file, business-rules, commands, periodic, project, search, vault)
+- [x] Verificar: nenhuma linha existente removida
+- [x] `bun run build` → exit 0
+- [x] Smoke: `node build/index.js` sobe sem erro
+- [x] Smoke: cliente MCP lista 27 tools (22 antigas + 5 novas)
+- [x] `std_review` → 0 warnings novos
+- [x] Commit: `feat(server): wire módulo business-rules`
 
 ---
 
