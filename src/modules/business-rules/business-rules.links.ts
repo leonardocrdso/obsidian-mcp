@@ -1,7 +1,7 @@
 import type { ObsidianClient } from "../../shared/obsidian-client.js";
 import { ObsidianApiError, RelatedRuleNotFoundError } from "../../shared/errors.js";
 import { buildPatchHeaders } from "../../shared/patch-headers.js";
-import { todayIso } from "./business-rules.template.js";
+import { nowIso } from "./business-rules.template.js";
 import type { RelatedRuleRef } from "./business-rules.types.js";
 import type { NoteJson } from "../../shared/types.js";
 
@@ -187,10 +187,10 @@ export async function injectBacklinks(
   sourceRulePath: string
 ): Promise<void> {
   const sourceLink = toWikiLink(sourceRulePath);
-  const today = todayIso();
+  const timestamp = nowIso();
   for (const target of targetPaths) {
     await patchSectionAppend(client, target, "Referências", `- ${sourceLink}\n`);
     await updateRelatedProjects(client, target, sourceProject);
-    await patchFrontmatterReplace(client, target, "atualizada", today);
+    await patchFrontmatterReplace(client, target, "atualizada", timestamp);
   }
 }

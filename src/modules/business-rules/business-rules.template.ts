@@ -4,6 +4,10 @@ export function todayIso(): string {
   return new Date().toISOString().slice(0, 10);
 }
 
+export function nowIso(): string {
+  return new Date().toISOString();
+}
+
 export function slugify(title: string): string {
   return title
     .normalize("NFD")
@@ -111,11 +115,12 @@ export function parseFrontmatter(content: string): {
   data: Record<string, unknown>;
   body: string;
 } {
-  if (!content.startsWith("---\n")) return { data: {}, body: content };
-  const end = content.indexOf("\n---", 4);
-  if (end === -1) return { data: {}, body: content };
-  const yaml = content.slice(4, end);
-  const body = content.slice(end + 4).replace(/^\n/, "");
+  const normalized = content.replace(/\r\n/g, "\n");
+  if (!normalized.startsWith("---\n")) return { data: {}, body: normalized };
+  const end = normalized.indexOf("\n---", 4);
+  if (end === -1) return { data: {}, body: normalized };
+  const yaml = normalized.slice(4, end);
+  const body = normalized.slice(end + 4).replace(/^\n/, "");
   return { data: parseSimpleYaml(yaml), body };
 }
 

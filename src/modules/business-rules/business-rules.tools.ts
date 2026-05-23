@@ -11,6 +11,7 @@ import {
 import { buildPatchHeaders } from "../../shared/patch-headers.js";
 import {
   generateId,
+  nowIso,
   parseFrontmatter,
   renderRule,
   serializeFrontmatter,
@@ -32,8 +33,20 @@ import type {
 const METADATA_ACCEPT = "application/vnd.olrapi.note+json";
 const ARCHIVED_FOLDER = "_arquivadas";
 
+const projectSlugSchema = z
+  .string()
+  .min(1, "project não pode ser vazio")
+  .refine((value) => !value.includes(".."), "project não pode conter '..'")
+  .refine((value) => !value.includes("/"), "project não pode conter '/'")
+  .refine((value) => !value.includes("\\"), "project não pode conter '\\'");
+
+const ruleRefSchema = z
+  .string()
+  .min(1)
+  .refine((value) => !value.includes(".."), "idOrPath não pode conter '..'");
+
 const businessRulesListSchema = {
-  project: z.string().describe("Slug do projeto sob Projetos/ (ex: 'obsidian-mcp')"),
+  project: projectSlugSchema.describe("Slug do projeto sob Projetos/ (ex: 'obsidian-mcp')"),
   includeArchived: z
     .boolean()
     .optional()
@@ -41,20 +54,27 @@ const businessRulesListSchema = {
 };
 
 const businessRulesGetSchema = {
-  project: z.string().describe("Slug do projeto"),
-  idOrPath: z
-    .string()
-    .describe("ID 'rule-YYYY-MM-DD-<slug>' ou nome do arquivo relativo à pasta Regras/"),
+  project: projectSlugSchema.describe("Slug do projeto"),
+  idOrPath: ruleRefSchema.describe(
+    "ID 'rule-YYYY-MM-DD-<slug>' ou nome do arquivo relativo à pasta Regras/"
+  ),
 };
 
 const relatedRuleSchema = z.object({
-  project: z.string().describe("Projeto da regra-alvo"),
-  idOrPath: z.string().describe("ID ou path da regra-alvo (deve existir)"),
+  project: projectSlugSchema.describe("Projeto da regra-alvo"),
+  idOrPath: ruleRefSchema.describe("ID ou path da regra-alvo (deve existir)"),
 });
 
 const businessRulesCreateSchema = {
-  project: z.string().describe("Slug do projeto"),
-  title: z.string().min(1).describe("Título humano da regra"),
+  project: projectSlugSchema.describe("Slug do projeto"),
+  title: z
+    .string()
+    .min(1)
+    .refine(
+      (value) => slugify(value).length > 0,
+      "title gera slug vazio após normalização — inclua letras ou números"
+    )
+    .describe("Título humano da regra"),
   area: z.string().describe("Área/domínio (ex: 'faturamento', 'rate-limit')"),
   contexto: z.string().describe("Por que a regra existe"),
   regra: z.string().describe("O que deve acontecer"),
@@ -81,16 +101,16 @@ const sectionUpdateSchema = z.object({
 });
 
 const businessRulesUpdateSchema = {
-  project: z.string().describe("Slug do projeto"),
-  idOrPath: z.string().describe("ID ou path da regra"),
+  project: projectSlugSchema.describe("Slug do projeto"),
+  idOrPath: ruleRefSchema.describe("ID ou path da regra"),
   update: z
     .discriminatedUnion("kind", [frontmatterUpdateSchema, sectionUpdateSchema])
     .describe("Atualização de frontmatter ou de seção"),
 };
 
 const businessRulesArchiveSchema = {
-  project: z.string().describe("Slug do projeto"),
-  idOrPath: z.string().describe("ID ou path da regra a arquivar"),
+  project: projectSlugSchema.describe("Slug do projeto"),
+  idOrPath: ruleRefSchema.describe("ID ou path da regra a arquivar"),
 };
 
 type BusinessRulesListParams = {
@@ -155,23 +175,28 @@ function frontmatterEntry(note: NoteJson, fullPath: string, archived: boolean): 
   };
 }
 
+async function readEntry(
+  client: ObsidianClient,
+  fullPath: string,
+  archived: boolean
+): Promise<RuleListEntry> {
+  try {
+    const note = await readNote(client, fullPath);
+    return frontmatterEntry(note, fullPath, archived);
+  } catch {
+    return { id: "", title: fullPath, status: "", area: "", path: fullPath, archived };
+  }
+}
+
 async function buildListEntries(
   client: ObsidianClient,
   folderPath: string,
   archived: boolean
 ): Promise<RuleListEntry[]> {
   const files = await listFolderFiles(client, folderPath);
-  const entries: RuleListEntry[] = [];
-  for (const file of files) {
-    const fullPath = `${folderPath}/${file}`;
-    try {
-      const note = await readNote(client, fullPath);
-      entries.push(frontmatterEntry(note, fullPath, archived));
-    } catch {
-      entries.push({ id: "", title: fullPath, status: "", area: "", path: fullPath, archived });
-    }
-  }
-  return entries;
+  return Promise.all(
+    files.map((file) => readEntry(client, `${folderPath}/${file}`, archived))
+  );
 }
 
 async function findRuleById(
@@ -256,6 +281,7 @@ function buildReferences(targetPaths: string[]): string[] {
 
 async function handleBusinessRulesCreate(client: ObsidianClient, params: CreateRuleParams) {
   const today = todayIso();
+  const timestamp = nowIso();
   const { id, path } = buildCreatePayload(params, today);
   await ensurePathDoesNotExist(client, path);
   const refs = params.relatedRules ?? [];
@@ -270,8 +296,8 @@ async function handleBusinessRulesCreate(client: ObsidianClient, params: CreateR
     tags: params.tags ?? [],
     projetosRelacionados: relatedProjects,
     fontes: params.fontes ?? [],
-    criada: today,
-    atualizada: today,
+    criada: timestamp,
+    atualizada: timestamp,
     contexto: params.contexto,
     regra: params.regra,
     excecoes: params.excecoes ?? "",
@@ -348,7 +374,7 @@ async function handleBusinessRulesUpdate(client: ObsidianClient, params: UpdateR
   const path = await resolveActiveRulePath(client, params.project, params.idOrPath);
   try {
     await applyUpdate(client, path, params.update);
-    await patchRuleFrontmatter(client, path, "atualizada", todayIso());
+    await patchRuleFrontmatter(client, path, "atualizada", nowIso());
   } catch (error) {
     if (error instanceof ObsidianApiError && error.statusCode === 404) {
       throw new RuleNotFoundError(params.project, params.idOrPath);
@@ -388,7 +414,7 @@ async function handleBusinessRulesArchive(
     }
     throw error;
   }
-  const newContent = rewriteArchivedContent(content, todayIso());
+  const newContent = rewriteArchivedContent(content, nowIso());
   const archivedPath = archivedPathFor(params.project, originalPath);
   await client.fetchVoid(`/vault/${client.encodePath(archivedPath)}`, {
     method: "PUT",
