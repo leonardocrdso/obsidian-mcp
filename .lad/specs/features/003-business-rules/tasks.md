@@ -212,9 +212,9 @@ Cobre AC1.
 Cobre AC7. Cobre §8 do design.
 
 - [ ] `Read CLAUDE.md`
-- [ ] Adicionar a seção `## Regras de Negócio` no final do arquivo (texto fornecido em §8 do design)
-- [ ] Validar: 0 linhas existentes removidas
-- [ ] Commit: `docs(claude): adicionar seção Regras de Negócio orientando auto-acionamento`
+- [x] Adicionar a seção `## Regras de Negócio` no final do arquivo (texto fornecido em §8 do design)
+- [x] Validar: 0 linhas existentes removidas
+- [x] Commit: `docs(claude): adicionar seção Regras de Negócio orientando auto-acionamento`
 
 ---
 
