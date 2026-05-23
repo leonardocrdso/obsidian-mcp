@@ -1,5 +1,5 @@
 import { writeFileSync, readFileSync, existsSync } from "fs";
-import { createInterface } from "readline";
+import { createInterface, type Interface } from "readline";
 import { homedir } from "os";
 import { join } from "path";
 
@@ -26,11 +26,9 @@ function mask(value: string): string {
   return value.slice(0, 4) + "*".repeat(value.length - 4);
 }
 
-function createPrompt() {
+function createLineBuffer(rl: Interface) {
   const lines: string[] = [];
   let waiting: ((line: string) => void) | null = null;
-
-  const rl = createInterface({ input: process.stdin, output: process.stderr });
 
   rl.on("line", (line) => {
     if (waiting) {
@@ -50,21 +48,35 @@ function createPrompt() {
     }
   });
 
-  const ask = (label: string, fallback?: string): Promise<string> => {
+  return {
+    consume(): Promise<string> | string | null {
+      if (lines.length > 0) return lines.shift()!;
+      return new Promise<string>((resolve) => {
+        waiting = (value) => resolve(value);
+      });
+    },
+  };
+}
+
+function createAsk(buffer: ReturnType<typeof createLineBuffer>) {
+  return async (label: string, fallback?: string): Promise<string> => {
     const suffix = fallback ? ` [${fallback}]` : "";
     process.stderr.write(`  ${label}${suffix}: `);
 
-    if (lines.length > 0) {
-      const value = lines.shift()!;
-      process.stderr.write(value + "\n");
-      return Promise.resolve(value.trim() || fallback || "");
+    const result = buffer.consume();
+    if (typeof result === "string") {
+      process.stderr.write(result + "\n");
+      return result.trim() || fallback || "";
     }
-
-    return new Promise((resolve) => {
-      waiting = (value) => resolve(value.trim() || fallback || "");
-    });
+    const value = await (result as Promise<string>);
+    return value.trim() || fallback || "";
   };
+}
 
+function createPrompt() {
+  const rl = createInterface({ input: process.stdin, output: process.stderr });
+  const buffer = createLineBuffer(rl);
+  const ask = createAsk(buffer);
   return { ask, close: () => rl.close() };
 }
 

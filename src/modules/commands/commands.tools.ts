@@ -8,33 +8,41 @@ interface ObsidianCommand {
   name: string;
 }
 
+const commandsExecuteSchema = {
+  commandId: z.string().describe("ID do comando a executar (ex: 'app:toggle-left-sidebar')"),
+};
+
+type CommandsExecuteParams = { commandId: string };
+
+async function handleCommandsList(client: ObsidianClient) {
+  const response = await client.fetchJson<{ commands: ObsidianCommand[] }>("/commands/");
+  const formatted = response.commands.map((cmd) => `${cmd.id} — ${cmd.name}`).join("\n");
+  return {
+    content: [{ type: "text" as const, text: formatted || "Nenhum comando encontrado." }],
+  };
+}
+
+async function handleCommandsExecute(client: ObsidianClient, params: CommandsExecuteParams) {
+  await client.fetchVoid(`/commands/${encodeURIComponent(params.commandId)}/`, {
+    method: "POST",
+  });
+  return {
+    content: [{ type: "text" as const, text: `Comando executado: ${params.commandId}` }],
+  };
+}
+
 export function registerCommandsTools(server: McpServer, client: ObsidianClient) {
   server.tool(
     "commandsList",
     "Lista todos os comandos disponíveis no Obsidian.",
     {},
-    safeTool(async () => {
-      const response = await client.fetchJson<{ commands: ObsidianCommand[] }>("/commands/");
-      const formatted = response.commands.map((cmd) => `${cmd.id} — ${cmd.name}`).join("\n");
-      return {
-        content: [{ type: "text" as const, text: formatted || "Nenhum comando encontrado." }],
-      };
-    })
+    safeTool(() => handleCommandsList(client))
   );
 
   server.tool(
     "commandsExecute",
     "Executa um comando do Obsidian pelo ID.",
-    {
-      commandId: z.string().describe("ID do comando a executar (ex: 'app:toggle-left-sidebar')"),
-    },
-    safeTool(async (params) => {
-      await client.fetchVoid(`/commands/${encodeURIComponent(params.commandId)}/`, {
-        method: "POST",
-      });
-      return {
-        content: [{ type: "text" as const, text: `Comando executado: ${params.commandId}` }],
-      };
-    })
+    commandsExecuteSchema,
+    safeTool((params: CommandsExecuteParams) => handleCommandsExecute(client, params))
   );
 }
