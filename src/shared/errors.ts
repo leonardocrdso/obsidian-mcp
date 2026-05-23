@@ -16,30 +16,40 @@ const STATUS_MESSAGES: Record<number, string> = {
   500: "Erro interno do Obsidian.",
 };
 
+const INVALID_TARGET_MESSAGE =
+  "O alvo (heading, block ou frontmatter) não foi encontrado no arquivo. Verifique se o nome existe exatamente como especificado, ou use createTargetIfMissing: true.";
+
+const NETWORK_OFFLINE_LINES = [
+  "[OFFLINE] Não foi possível conectar ao Obsidian.",
+  "Verifique se o Obsidian está aberto e o plugin Local REST API está ativo.",
+];
+
+function isInvalidTargetError(error: ObsidianApiError): boolean {
+  return error.statusCode === 400 && error.message.includes("invalid-target");
+}
+
+function resolveApiErrorMessage(error: ObsidianApiError): string {
+  if (isInvalidTargetError(error)) {
+    return `[${error.statusCode}] ${INVALID_TARGET_MESSAGE}`;
+  }
+  const baseMessage = STATUS_MESSAGES[error.statusCode] ?? "Erro inesperado na API do Obsidian.";
+  const parts = [`[${error.statusCode}] ${baseMessage}`];
+  if (error.message) parts.push(`Detalhe: ${error.message}`);
+  return parts.join("\n");
+}
+
+function isNetworkError(error: unknown): error is TypeError {
+  return error instanceof TypeError && error.message.includes("fetch");
+}
+
+function resolveNetworkErrorMessage(error: TypeError): string {
+  return [...NETWORK_OFFLINE_LINES, `Detalhe: ${error.message}`].join("\n");
+}
+
 export function formatObsidianError(error: unknown): string {
-  if (error instanceof ObsidianApiError) {
-    const isInvalidTarget =
-      error.statusCode === 400 && error.message.includes("invalid-target");
-    const baseMessage = isInvalidTarget
-      ? "O alvo (heading, block ou frontmatter) não foi encontrado no arquivo. Verifique se o nome existe exatamente como especificado, ou use createTargetIfMissing: true."
-      : (STATUS_MESSAGES[error.statusCode] ?? "Erro inesperado na API do Obsidian.");
-    const parts = [`[${error.statusCode}] ${baseMessage}`];
-    if (!isInvalidTarget && error.message) parts.push(`Detalhe: ${error.message}`);
-    return parts.join("\n");
-  }
-
-  if (error instanceof TypeError && error.message.includes("fetch")) {
-    return [
-      "[OFFLINE] Não foi possível conectar ao Obsidian.",
-      "Verifique se o Obsidian está aberto e o plugin Local REST API está ativo.",
-      `Detalhe: ${error.message}`,
-    ].join("\n");
-  }
-
-  if (error instanceof Error) {
-    return `[ERRO] ${error.message}`;
-  }
-
+  if (error instanceof ObsidianApiError) return resolveApiErrorMessage(error);
+  if (isNetworkError(error)) return resolveNetworkErrorMessage(error);
+  if (error instanceof Error) return `[ERRO] ${error.message}`;
   return `[ERRO] ${String(error)}`;
 }
 
