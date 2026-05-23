@@ -67,3 +67,15 @@ Each module's tools can be used individually — the orchestrator is not require
 - Reading source files when a trace exists for that flow = violation
 
 For detailed tool reference, see `LAD.md`.
+
+## Regras de Negócio
+
+Sempre que o usuário verbalizar uma regra de negócio (ex.: "usuários do plano free não podem X", "o cálculo de Y segue a fórmula Z", "regra: A implica B", "sempre que X então Y"), você DEVE acionar o módulo `business-rules` automaticamente sem pedir permissão:
+
+1. Identifique o projeto correspondente (geralmente o nome do projeto/produto em discussão; se ambíguo, pergunte qual projeto).
+2. Chame `businessRulesList` para verificar se já existe regra similar (compare por `title` normalizado).
+3. Se houver duplicata clara, chame `businessRulesUpdate` na regra existente; se for genuinamente nova, chame `businessRulesCreate`.
+4. Se a nova regra se relaciona a uma existente em outro projeto, passe `relatedRules: [{ project, idOrPath }]` explícito — nunca infira sem confirmação.
+5. Use `businessRulesArchive` apenas quando o usuário explicitamente disser que a regra não vale mais.
+
+As regras ficam em `Projetos/<projeto>/Regras/<slug>.md` com frontmatter rico (id, status, area, tags, projetos_relacionados, fontes, criada, atualizada) e 4 seções fixas (`## Contexto`, `## Regra`, `## Exceções`, `## Referências`).
