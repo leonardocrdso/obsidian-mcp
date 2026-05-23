@@ -106,24 +106,24 @@ Tipos puros, sem lógica. Cobre §10 do design.
 
 Funções puras: slugify, generateId, todayIso, renderRule, parseFrontmatter, serializeFrontmatter. Cobre §4 e §5.
 
-- [ ] Consultar MCP `clean-code` antes de codar
-- [ ] Criar `src/modules/business-rules/business-rules.template.ts`
-- [ ] Implementar:
-  - [ ] `export function todayIso(): string` — `new Date().toISOString().slice(0, 10)`
-  - [ ] `export function slugify(title: string): string` — pipeline NFD → remove diacríticos → lowercase → remove não-alfanum → colapsa whitespace → colapsa hífens → trim hífens → slice(60)
-  - [ ] `export function generateId(slug: string, today: string): string` — `rule-${today}-${slug}`
-  - [ ] Helpers privados: `renderList(items)`, `quoteIfNeeded(s)`, `stripQuotes(s)`, `parseYamlValue(raw)`, `parseSimpleYaml(yaml)`
-  - [ ] `export function renderRule(params: RenderRuleParams): string` — composição declarativa do template (vide §5.1 do design)
-  - [ ] `export function parseFrontmatter(content: string): { data: Record<string, unknown>; body: string }`
-  - [ ] `export function serializeFrontmatter(data: Record<string, unknown>): string` — inversa de parseFrontmatter; cobre o subset que emitimos
-- [ ] Garantir: cada função pública ≤ 20 linhas; nesting ≤ 3
-- [ ] Validar manualmente (em REPL ou smoke pós-T6):
-  - [ ] `slugify("Limite de export PDF — usuários free")` → `"limite-de-export-pdf-usuarios-free"`
-  - [ ] `slugify("!!!")` → `""` (caller decide o que fazer)
-  - [ ] `parseFrontmatter(renderRule({...}))` reproduz os campos
-- [ ] `bun run build` → exit 0
-- [ ] `std_review` → 0 warnings de function-length/nesting-depth
-- [ ] Commit: `feat(business-rules): adicionar template (slugify, render, parseFrontmatter)`
+- [x] Consultar MCP `clean-code` antes de codar
+- [x] Criar `src/modules/business-rules/business-rules.template.ts`
+- [x] Implementar:
+  - [x] `export function todayIso(): string` — `new Date().toISOString().slice(0, 10)`
+  - [x] `export function slugify(title: string): string` — pipeline NFD → remove diacríticos → lowercase → remove não-alfanum → colapsa whitespace → colapsa hífens → trim hífens → slice(60)
+  - [x] `export function generateId(slug: string, today: string): string` — `rule-${today}-${slug}`
+  - [x] Helpers privados: `renderList(items)`, `quoteIfNeeded(s)`, `stripQuotes(s)`, `parseYamlValue(raw)`, `parseSimpleYaml(yaml)`
+  - [x] `export function renderRule(params: RenderRuleParams): string` — composição declarativa do template (vide §5.1 do design)
+  - [x] `export function parseFrontmatter(content: string): { data: Record<string, unknown>; body: string }`
+  - [x] `export function serializeFrontmatter(data: Record<string, unknown>): string` — inversa de parseFrontmatter; cobre o subset que emitimos
+- [x] Garantir: cada função pública ≤ 20 linhas; nesting ≤ 3
+- [x] Validar manualmente (em REPL ou smoke pós-T6):
+  - [x] `slugify("Limite de export PDF — usuários free")` → `"limite-de-export-pdf-usuarios-free"`
+  - [x] `slugify("!!!")` → `""` (caller decide o que fazer)
+  - [x] `parseFrontmatter(renderRule({...}))` reproduz os campos
+- [x] `bun run build` → exit 0
+- [x] `std_review` → 0 warnings de function-length/nesting-depth
+- [x] Commit: `feat(business-rules): adicionar template (slugify, render, parseFrontmatter)`
 
 ---
 
