@@ -10,7 +10,6 @@ dist/
 .env
 .env.*
 .npmrc
-.lad/secrets/
 
 # logs
 *.log
@@ -26,7 +25,7 @@ Thumbs.db
 
 # tooling locais
 .claude/
-.lad/specs/
+.lad/
 docs/superpowers/
 
 # scripts locais
