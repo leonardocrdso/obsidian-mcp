@@ -1,7 +1,37 @@
+# dependencies
 node_modules/
+
+# build output
 build/
+dist/
+*.tsbuildinfo
+
+# env / secrets
 .env
+.env.*
 .npmrc
-publish.sh
-.claude/
 .lad/secrets/
+
+# logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# os / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# tooling locais
+.claude/
+.lad/specs/
+docs/superpowers/
+
+# scripts locais
+publish.sh
+
+# lixo acidental na raiz (redirects sem destino)
+/bun
+/uv
