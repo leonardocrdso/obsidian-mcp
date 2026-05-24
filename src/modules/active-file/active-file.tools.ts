@@ -2,6 +2,7 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import type { ObsidianClient } from "../../shared/obsidian-client.js";
 import { safeTool } from "../../shared/errors.js";
+import { buildPatchHeaders } from "../../shared/patch-headers.js";
 
 const patchFields = {
   operation: z.enum(["append", "prepend", "replace"]).describe("Operação: append, prepend ou replace"),
@@ -10,6 +11,10 @@ const patchFields = {
   targetDelimiter: z.string().optional().describe("Delimitador para separar conteúdo inserido"),
   trimTargetWhitespace: z.boolean().optional().describe("Remover espaços do target antes de comparar"),
   createTargetIfMissing: z.boolean().optional().describe("Criar o alvo se não existir no arquivo"),
+  targetScope: z
+    .enum(["content", "marker", "markerAndContent"])
+    .optional()
+    .describe("Escopo do alvo no PATCH: content (default), marker (apenas o marcador) ou markerAndContent (marcador+conteúdo)"),
 };
 
 const activeFileUpdateSchema = {
@@ -35,33 +40,8 @@ type ActiveFilePatchParams = {
   targetDelimiter?: string;
   trimTargetWhitespace?: boolean;
   createTargetIfMissing?: boolean;
+  targetScope?: "content" | "marker" | "markerAndContent";
 };
-
-type PatchHeaderParams = {
-  operation: string;
-  targetType: string;
-  target: string;
-  targetDelimiter?: string;
-  trimTargetWhitespace?: boolean;
-  createTargetIfMissing?: boolean;
-};
-
-function buildPatchHeaders(params: PatchHeaderParams): Record<string, string> {
-  const headers: Record<string, string> = {
-    "Content-Type": "text/markdown",
-    Operation: params.operation,
-    "Target-Type": params.targetType,
-    Target: encodeURIComponent(params.target),
-  };
-  if (params.targetDelimiter) headers["Target-Delimiter"] = params.targetDelimiter;
-  if (params.trimTargetWhitespace !== undefined) {
-    headers["Trim-Target-Whitespace"] = String(params.trimTargetWhitespace);
-  }
-  if (params.createTargetIfMissing !== undefined) {
-    headers["Create-Target-If-Missing"] = String(params.createTargetIfMissing);
-  }
-  return headers;
-}
 
 async function handleActiveFileGet(client: ObsidianClient) {
   const text = await client.fetchText("/active/");

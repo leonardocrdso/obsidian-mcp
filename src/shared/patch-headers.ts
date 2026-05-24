@@ -5,6 +5,7 @@ export type PatchHeaderParams = {
   targetDelimiter?: string;
   trimTargetWhitespace?: boolean;
   createTargetIfMissing?: boolean;
+  targetScope?: "content" | "marker" | "markerAndContent";
 };
 
 export function buildPatchHeaders(params: PatchHeaderParams): Record<string, string> {
@@ -21,5 +22,6 @@ export function buildPatchHeaders(params: PatchHeaderParams): Record<string, str
   if (params.createTargetIfMissing !== undefined) {
     headers["Create-Target-If-Missing"] = String(params.createTargetIfMissing);
   }
+  if (params.targetScope) headers["Target-Scope"] = params.targetScope;
   return headers;
 }

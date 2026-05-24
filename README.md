@@ -2,7 +2,7 @@
 
 MCP server para integração com o Obsidian via plugin [Local REST API](https://github.com/coddingtonbear/obsidian-local-rest-api).
 
-Cobertura completa da API com **28 tools** organizadas em 7 módulos.
+Cobertura completa da API com **30 tools** organizadas em 8 módulos.
 
 ## Requisitos
 
@@ -131,9 +131,9 @@ Se preferir, configure via variáveis de ambiente em vez do setup interativo:
 
 Prioridade de configuração: arquivo `~/.obsidian-mcp.json` > variáveis de ambiente.
 
-## Tools (28)
+## Tools (30)
 
-### Vault (8)
+### Vault (9)
 | Tool | Descrição |
 |---|---|
 | `vaultListFiles` | Lista arquivos e pastas do vault |
@@ -141,9 +141,10 @@ Prioridade de configuração: arquivo `~/.obsidian-mcp.json` > variáveis de amb
 | `vaultGetMetadata` | Retorna metadata (frontmatter, tags) |
 | `vaultCreateFile` | Cria ou substitui um arquivo |
 | `vaultAppendContent` | Adiciona conteúdo ao final |
-| `vaultPatchContent` | Insere conteúdo em local específico |
+| `vaultPatchContent` | Insere conteúdo em local específico (suporta `targetScope`) |
 | `vaultDeleteFile` | Remove um arquivo |
 | `vaultOpenFile` | Abre arquivo no Obsidian |
+| `vaultMoveFile` | Move arquivo preservando histórico e links (Destination + Allow-Overwrite) |
 
 ### Commands (2)
 | Tool | Descrição |
@@ -163,16 +164,17 @@ Prioridade de configuração: arquivo `~/.obsidian-mcp.json` > variáveis de amb
 | `activeFileGet` | Retorna conteúdo do arquivo ativo |
 | `activeFileUpdate` | Substitui conteúdo do arquivo ativo |
 | `activeFileAppend` | Adiciona conteúdo ao arquivo ativo |
-| `activeFilePatch` | Insere conteúdo em local específico |
+| `activeFilePatch` | Insere conteúdo em local específico (suporta `targetScope`) |
 | `activeFileDelete` | Remove o arquivo ativo |
 
 ### Periodic Notes (5)
+Aceitam `year`/`month`/`day` opcionais para alvo em data específica (informe os três juntos ou nenhum).
 | Tool | Descrição |
 |---|---|
-| `periodicGetNote` | Retorna nota periódica atual |
+| `periodicGetNote` | Retorna nota periódica (atual ou data específica) |
 | `periodicCreateNote` | Cria/substitui nota periódica |
 | `periodicAppendContent` | Adiciona conteúdo à nota periódica |
-| `periodicPatchContent` | Insere conteúdo em local específico |
+| `periodicPatchContent` | Insere conteúdo em local específico (suporta `targetScope`) |
 | `periodicDeleteNote` | Remove nota periódica |
 
 ### Business Rules (5)
@@ -188,6 +190,11 @@ Prioridade de configuração: arquivo `~/.obsidian-mcp.json` > variáveis de amb
 | Tool | Descrição |
 |---|---|
 | `projectInit` | Inicializa estrutura de projeto no vault (CLAUDE.md + Regras/, Decisões/, Notas/) — idempotente |
+
+### Tags (1)
+| Tool | Descrição |
+|---|---|
+| `tagsList` | Lista todas as tags do vault com contagem (inline + frontmatter, prefixos hierárquicos somam) |
 
 ## Desenvolvimento
 

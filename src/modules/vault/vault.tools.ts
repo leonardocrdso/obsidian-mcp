@@ -13,6 +13,10 @@ const patchFields = {
   targetDelimiter: z.string().optional().describe("Delimitador para separar conteúdo inserido (ex: '\\n')"),
   trimTargetWhitespace: z.boolean().optional().describe("Remover espaços do target antes de comparar"),
   createTargetIfMissing: z.boolean().optional().describe("Criar o alvo se não existir no arquivo"),
+  targetScope: z
+    .enum(["content", "marker", "markerAndContent"])
+    .optional()
+    .describe("Escopo do alvo: content (default), marker (apenas marcador) ou markerAndContent (marcador+conteúdo)"),
 };
 
 const vaultListFilesSchema = {
@@ -52,6 +56,19 @@ const vaultOpenFileSchema = {
   newLeaf: z.boolean().optional().describe("Abrir em nova aba (padrão: false)"),
 };
 
+const vaultMoveFileSchema = {
+  path: z.string().describe("Caminho atual do arquivo no vault"),
+  destination: z
+    .string()
+    .describe(
+      "Novo caminho relativo ao vault. Se terminar com '/', o nome de origem é preservado na pasta destino (ex: 'archive/' move 'notes/todo.md' para 'archive/todo.md')."
+    ),
+  allowOverwrite: z
+    .boolean()
+    .optional()
+    .describe("Se true, sobrescreve arquivo já existente no destino. Default false retorna 409."),
+};
+
 type VaultListFilesParams = { path?: string };
 type VaultGetFileParams = { path: string };
 type VaultGetMetadataParams = { path: string };
@@ -66,9 +83,17 @@ type VaultPatchContentParams = {
   targetDelimiter?: string;
   trimTargetWhitespace?: boolean;
   createTargetIfMissing?: boolean;
+  targetScope?: "content" | "marker" | "markerAndContent";
 };
 type VaultDeleteFileParams = { path: string };
 type VaultOpenFileParams = { path: string; newLeaf?: boolean };
+type VaultMoveFileParams = { path: string; destination: string; allowOverwrite?: boolean };
+
+function encodeDestination(client: ObsidianClient, destination: string): string {
+  const trailingSlash = destination.endsWith("/");
+  const encoded = client.encodePath(trailingSlash ? destination.slice(0, -1) : destination);
+  return trailingSlash ? `${encoded}/` : encoded;
+}
 
 async function handleVaultListFiles(client: ObsidianClient, params: VaultListFilesParams) {
   const dirPath = params.path ? `${client.encodePath(params.path)}/` : "";
@@ -144,6 +169,20 @@ async function handleVaultOpenFile(client: ObsidianClient, params: VaultOpenFile
   });
   return {
     content: [{ type: "text" as const, text: `Arquivo aberto: ${params.path}` }],
+  };
+}
+
+async function handleVaultMoveFile(client: ObsidianClient, params: VaultMoveFileParams) {
+  const headers: Record<string, string> = { Destination: encodeDestination(client, params.destination) };
+  if (params.allowOverwrite) headers["Allow-Overwrite"] = "true";
+  await client.fetchVoid(`/vault/${client.encodePath(params.path)}`, {
+    method: "MOVE",
+    headers,
+  });
+  return {
+    content: [
+      { type: "text" as const, text: `Arquivo movido: ${params.path} → ${params.destination}` },
+    ],
   };
 }
 
@@ -223,5 +262,16 @@ export function registerVaultTools(server: McpServer, client: ObsidianClient) {
     "Abre um arquivo no Obsidian.",
     vaultOpenFileSchema,
     safeTool((params: VaultOpenFileParams) => handleVaultOpenFile(client, params))
+  );
+
+  server.tool(
+    "vaultMoveFile",
+    [
+      "Move um arquivo dentro do vault preservando histórico e atualizando links internos.",
+      "Use 'destination' terminado em '/' para mover para uma pasta mantendo o nome original.",
+      "Defina 'allowOverwrite' para sobrescrever um arquivo existente no destino.",
+    ].join("\n"),
+    vaultMoveFileSchema,
+    safeTool((params: VaultMoveFileParams) => handleVaultMoveFile(client, params))
   );
 }
