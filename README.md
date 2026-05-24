@@ -2,7 +2,7 @@
 
 MCP server para integração com o Obsidian via plugin [Local REST API](https://github.com/coddingtonbear/obsidian-local-rest-api).
 
-Cobertura completa da API com **27 tools** organizadas em 6 módulos.
+Cobertura completa da API com **28 tools** organizadas em 7 módulos.
 
 ## Requisitos
 
@@ -131,7 +131,7 @@ Se preferir, configure via variáveis de ambiente em vez do setup interativo:
 
 Prioridade de configuração: arquivo `~/.obsidian-mcp.json` > variáveis de ambiente.
 
-## Tools (27)
+## Tools (28)
 
 ### Vault (8)
 | Tool | Descrição |
@@ -183,6 +183,11 @@ Prioridade de configuração: arquivo `~/.obsidian-mcp.json` > variáveis de amb
 | `businessRulesCreate` | Cria nova regra com template padronizado (auto-acionada) |
 | `businessRulesUpdate` | Atualiza frontmatter ou seção de uma regra |
 | `businessRulesArchive` | Move regra para _arquivadas/ e marca status |
+
+### Project (1)
+| Tool | Descrição |
+|---|---|
+| `projectInit` | Inicializa estrutura de projeto no vault (CLAUDE.md + Regras/, Decisões/, Notas/) — idempotente |
 
 ## Desenvolvimento
 
